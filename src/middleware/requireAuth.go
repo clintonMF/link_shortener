@@ -12,6 +12,12 @@ import (
 )
 
 func RequireAuth(c *gin.Context) {
+	/*
+		this function authenticates the user and returns
+		unauthorized if the user is unknown.
+		This ensures that unknown users do not get access
+		to resources that are private
+	*/
 	tokenString, err := c.Cookie("UserAuth")
 	if err != nil {
 		c.AbortWithStatus(http.StatusUnauthorized)
@@ -51,6 +57,12 @@ func RequireAuth(c *gin.Context) {
 }
 
 func OptionalAuth(c *gin.Context) {
+	/*
+		Unlike the RequireAuth function which returns unauthorized
+		if the user is unknown. This function is used to determine
+		if the user is known or unknown so that we can modify what
+		the user sees.
+	*/
 	tokenString, err := c.Cookie("UserAuth")
 	if err != nil {
 		c.Next()

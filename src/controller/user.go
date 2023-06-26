@@ -126,20 +126,3 @@ func SignIn(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 
 }
-
-func Validate(c *gin.Context) {
-	user, _ := c.Get("user")
-
-	if user == nil {
-		c.JSON(http.StatusOK, gin.H{
-			"status":  "success",
-			"message": "No user here",
-		})
-
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"status":  "success",
-		"message": user,
-	})
-}

@@ -10,17 +10,20 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func init() {
+}
+
 func main() {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("unable to load .env")
 	}
+
 	r := gin.Default()
 
 	db := setup.GetDB()
 	db.AutoMigrate(&models.Goly{})
 	db.AutoMigrate(&models.User{})
-
 	users := r.Group("/users")
 	golies := r.Group("/golies")
 	redirect := r.Group("/r")

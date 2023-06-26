@@ -20,34 +20,38 @@ var (
 
 const name string = "http://localhost:8080/r/"
 
-func GetAllGolies(c *gin.Context) {
-	user, _ := c.Get("user")
-	fmt.Println("here")
-
-	var golies []models.Goly
-	var err error
-
-	if user == nil {
-		pubgolies, err := models.GetPublicGolies()
-		if err != nil {
-			c.JSON(400, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{
-			"status":              "success",
-			"Golies":              pubgolies,
-			"number of redirects": len(pubgolies),
-		})
-
+func GetPublicGolies(c *gin.Context) {
+	/*
+		This function returns all the publicly available
+		golies to anyone who goes to the site.
+	*/
+	pubgolies, err := models.GetPublicGolies()
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
 		return
-	} else {
-		cur_user := user.(*models.User)
-		golies, err = models.GetGoliesByUserID(cur_user.ID)
-		if err != nil {
-			c.JSON(400, gin.H{"error": err.Error()})
-			return
-		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":              "success",
+		"Golies":              pubgolies,
+		"number of redirects": len(pubgolies),
+	})
+
+	return
+}
+
+func GetUserGolies(c *gin.Context) {
+	/*
+		This function returns all the golies a user has created
+		i.e user goly history.
+	*/
+	user, _ := c.Get("user")
+
+	cur_user := user.(*models.User)
+	golies, err := models.GetGoliesByUserID(cur_user.ID)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -58,6 +62,9 @@ func GetAllGolies(c *gin.Context) {
 }
 
 func GetGoly(c *gin.Context) {
+	/*
+		This is used to get an individual Goly by its unique ID
+	*/
 	var goly *models.Goly
 	var err error
 	id := c.Param("id")
@@ -72,7 +79,6 @@ func GetGoly(c *gin.Context) {
 	fmt.Println(found)
 	if found {
 		goly = value.(*models.Goly)
-		fmt.Println("got here")
 	} else {
 		goly, err = models.GetGolyByID(uint(ID))
 
@@ -146,6 +152,9 @@ func GetGoly(c *gin.Context) {
 }
 
 func NewGoly(c *gin.Context) {
+	/*
+		This is used to create a new goly
+	*/
 	var goly models.Goly
 
 	if err := c.ShouldBindJSON(&goly); err != nil {
@@ -211,9 +220,19 @@ func NewGoly(c *gin.Context) {
 }
 
 func UpdateGoly(c *gin.Context) {
+	/*
+		This is used to modify a  goly
+	*/
 	id := c.Param("id")
 
 	ID, _ := strconv.ParseUint(id, 10, 64)
+
+	/* name variable ensures that golies are saved with
+	the correct ID  in the cache for easy retrieve*/
+	name := "Goly with id" + string(ID)
+
+	_, found := cache.Get(name)
+	fmt.Println(found)
 
 	goly, err := models.GetGolyByID(uint(ID))
 
@@ -237,6 +256,7 @@ func UpdateGoly(c *gin.Context) {
 		return
 	}
 
+	// updating the goly
 	goly.Redirect = updatedGoly.Redirect
 	goly.Public = updatedGoly.Public
 
@@ -250,6 +270,11 @@ func UpdateGoly(c *gin.Context) {
 		return
 	}
 
+	// update the cache data
+	if found {
+		cache.Set(name, goly, 1*time.Hour)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "success",
 		"message": utils.UpdatedMessage("goly", int(ID)),
@@ -258,6 +283,9 @@ func UpdateGoly(c *gin.Context) {
 }
 
 func DeleteGoly(c *gin.Context) {
+	/*
+		This is used to delete  a goly
+	*/
 	id := c.Param("id")
 
 	ID, _ := strconv.ParseUint(id, 10, 64)
