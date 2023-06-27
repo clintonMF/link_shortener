@@ -8,9 +8,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Name     string `json:"name"`
-	Email    string `json:"email" gorm:"unique;not null"`
-	Password string `json:"password" gorm:"not null"`
+	Name     string `json:"name" binding:"required"`
+	Email    string `json:"email" gorm:"unique;not null" binding:"required"`
+	Password string `json:"password" gorm:"not null" binding:"required"`
 	Golies   []Goly `json:"golies" gorm:"foreignKey:UserID"`
 }
 

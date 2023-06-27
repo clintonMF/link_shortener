@@ -9,10 +9,10 @@ import (
 
 type Goly struct {
 	gorm.Model
-	Redirect string `json:"redirect"`
+	Redirect string `json:"redirect" binding:"required"`
 	Goly     string `json:"goly" gorm:"unique;not null"`
 	Clicked  uint64 `json:"clicked"`
-	Custom   bool   `json:"custom"`
+	Custom   bool   `json:"custom" binding:"required"`
 	Public   bool   `json:"public" gorm:"default:false"`
 	UserID   uint   `json:"userId"`
 }
