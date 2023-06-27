@@ -18,7 +18,7 @@ var (
 	cache          = setup.InitCache()
 )
 
-const name string = "http://localhost:8080/r/"
+const name string = "http://localhost:8001/r/"
 
 func GetPublicGolies(c *gin.Context) {
 	/*
@@ -76,7 +76,6 @@ func GetGoly(c *gin.Context) {
 	name := "Goly with id" + string(ID)
 
 	value, found := cache.Get(name)
-	fmt.Println(found)
 	if found {
 		goly = value.(*models.Goly)
 	} else {
@@ -97,7 +96,6 @@ func GetGoly(c *gin.Context) {
 	// fmt.Println(found, "here")
 	user, _ := c.Get("user")
 
-	fmt.Println(goly.Public, "public")
 	if user == nil && !goly.Public {
 		// unknwon user can not access private golies  i.e public = false
 		c.JSON(http.StatusUnauthorized, gin.H{
