@@ -9,6 +9,32 @@ import (
 )
 
 func Redirect(c *gin.Context) {
+	// swagger:operation GET /r/{redirect} getRedirect
+	//
+	// performing the redirect operation
+	//
+	// ---
+	// tags:
+	//    [redirect]
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: redirect
+	//   in: query
+	//   description: shortened link string
+	//   required: true
+	//   type: integer
+	//
+	// responses:
+	//   '301':
+	//     description: redirect to the original website/link
+	//   '400':
+	//     description: bad request
+	//   '401':
+	//     description: Unauthorized
+	//   '404':
+	//     description: goly not found
+
 	golyUrl := c.Param("redirect")
 	goly, err := models.GetGolyByURL(name + golyUrl)
 
@@ -33,6 +59,27 @@ func Redirect(c *gin.Context) {
 }
 
 func GenerateQRCode(c *gin.Context) {
+	// swagger:operation GET /r/{redirect}/generateQRcode getQrcode
+	//
+	// Generating the QR code
+	//
+	// ---
+	// tags:
+	//    [redirect]
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: redirect
+	//   in: query
+	//   description: shortened link string
+	//   required: true
+	//   type: integer
+	//
+	// responses:
+	//   '200':
+	//     description: QR code generated
+	//     type: image
+
 	golyUrl := c.Param("redirect")
 	goly, err := models.GetGolyByURL(name + golyUrl)
 

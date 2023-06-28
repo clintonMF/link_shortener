@@ -21,6 +21,24 @@ var (
 const name string = "http://localhost:8001/r/"
 
 func GetPublicGolies(c *gin.Context) {
+	// swagger:operation GET /golies getPublicGolies
+	//
+	// Returns all public golies
+	//
+	// ---
+	// tags:
+	//    [Golies]
+	// produces:
+	// - application/json
+	// responses:
+	//   '200':
+	//     description: get public golies
+	//     schema:
+	//       type: object
+	//       "$ref": "#/definitions/PublicGoliesReponse"
+	//   '400':
+	//     description: bad request
+
 	/*
 		This function returns all the publicly available
 		golies to anyone who goes to the site.
@@ -41,9 +59,35 @@ func GetPublicGolies(c *gin.Context) {
 }
 
 func GetUserGolies(c *gin.Context) {
+	// swagger:operation GET /users/{id}/history getGolies
+	//
+	// Returns user goly history i.e All golies a user created
+	// ---
+	// tags:
+	//    [Golies]
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: id
+	//   in: query
+	//   description: user id
+	//   required: true
+	//   type: integer
+	//
+	// responses:
+	//   '200':
+	//     description: get golies
+	//     schema:
+	//       type: object
+	//       "$ref": "#/definitions/GoliesResponse"
+	//   '400':
+	//     description: bad request
+	//   '401':
+	//     description: Unauthorized
+
 	/*
 		This function returns all the golies a user has created
-		i.e user goly history.
+			i.e user goly history.
 	*/
 	user, _ := c.Get("user")
 
@@ -62,6 +106,34 @@ func GetUserGolies(c *gin.Context) {
 }
 
 func GetGoly(c *gin.Context) {
+	// swagger:operation GET /golies/{id} getGoly
+	//
+	// Get goly by id
+	// ---
+	// tags:
+	//    [Golies]
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: id
+	//   in: query
+	//   description: goly id
+	//   required: true
+	//   type: integer
+	//
+	// responses:
+	//   '200':
+	//     description: get goly by ID
+	//     schema:
+	//       type: object
+	//       "$ref": "#/definitions/GolyResponse"
+	//   '400':
+	//     description: bad request
+	//   '401':
+	//     description: Unauthorized
+	//   '404':
+	//     description: goly not found
+
 	/*
 		This is used to get an individual Goly by its unique ID
 	*/
@@ -150,6 +222,32 @@ func GetGoly(c *gin.Context) {
 }
 
 func NewGoly(c *gin.Context) {
+	// swagger:operation POST /golies creategoly
+	//
+	// create a new goly
+	//
+	// ---
+	// tags:
+	//    [Golies]
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: user
+	//   in: body
+	//   description: user details
+	//   required: true
+	//   type: object
+	//   schema:
+	//     "$ref": "#/definitions/Goly"
+	// responses:
+	//   '201':
+	//     description: Goly created
+	//     schema:
+	//       type: object
+	//       "$ref": "#/definitions/GolyResponse"
+	//   '400':
+	//     description: bad request
+
 	/*
 		This is used to create a new goly
 	*/
@@ -218,6 +316,41 @@ func NewGoly(c *gin.Context) {
 }
 
 func UpdateGoly(c *gin.Context) {
+	// swagger:operation PUT /golies/{id} updateGoly
+	//
+	// update a goly
+	//
+	// ---
+	// tags:
+	//    [Golies]
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: id
+	//   in: query
+	//   description: goly id
+	//   required: true
+	//   type: integer
+	// - name: course
+	//   in: body
+	//   description: course details
+	//   required: true
+	//   type: object
+	//   schema:
+	//     "$ref": "#/definitions/Goly"
+	// responses:
+	//   '200':
+	//     description: course updated successfully
+	//     schema:
+	//       type: object
+	//       "$ref": "#/definitions/GolyResponse"
+	//   '400':
+	//     description: bad request
+	//   '401':
+	//     description: Unauthorized
+	//   '404':
+	//     description: Goly not found
+
 	/*
 		This is used to modify a  goly
 	*/
@@ -281,6 +414,31 @@ func UpdateGoly(c *gin.Context) {
 }
 
 func DeleteGoly(c *gin.Context) {
+	// swagger:operation DELETE /golies/{id} deleteGoly
+	//
+	// delete a goly
+	//
+	// ---
+	// tags:
+	//    [Golies]
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: id
+	//   in: query
+	//   description: Goly id
+	//   required: true
+	//   type: integer
+	// responses:
+	//   '200':
+	//     description: Goly deleted successfully
+	//   '400':
+	//     description: bad request
+	//   '401':
+	//     description: Unauthorized
+	//   '404':
+	//     description: Goly not found
+
 	/*
 		This is used to delete  a goly
 	*/

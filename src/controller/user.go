@@ -12,6 +12,31 @@ import (
 )
 
 func SignUp(c *gin.Context) {
+	// swagger:operation POST /user/signup createUser
+	//
+	// create a new user
+	//
+	// ---
+	// tags:
+	//    [user]
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: user
+	//   in: body
+	//   description: course details
+	//   required: true
+	//   type: object
+	//   schema:
+	//     "$ref": "#/definitions/User"
+	// responses:
+	//   '201':
+	//     description: course created
+	//     schema:
+	//       type: object
+	//       "$ref": "#/definitions/UserResponse"
+	//   '400':
+	//     description: bad request
 	var user models.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -67,11 +92,33 @@ func SignUp(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{
 		"status":  "success",
 		"message": utils.CreatedMessage("goly"),
-		"course":  createdUser,
+		"User":    createdUser,
 	})
 }
 
 func SignIn(c *gin.Context) {
+	// swagger:operation POST /user/signin LoginUser
+	//
+	// user login
+	//
+	// ---
+	// tags:
+	//    [user]
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: user
+	//   in: body
+	//   description: login details
+	//   required: true
+	//   type: object
+	//   schema:
+	//     "$ref": "#/definitions/UserLogin"
+	// responses:
+	//   '204':
+	//     description: user logged in, no content
+	//   '400':
+	//     description: bad request
 	var body struct {
 		Email    string
 		Password string
