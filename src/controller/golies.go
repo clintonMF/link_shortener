@@ -18,7 +18,7 @@ var (
 	cache          = setup.InitCache()
 )
 
-const name string = "http://localhost:8001/r/"
+const name string = "https://goly.onrender.com/r/"
 
 func GetPublicGolies(c *gin.Context) {
 	// swagger:operation GET /golies getPublicGolies

@@ -9,8 +9,8 @@
 // link analytics  i.e number of times the link has been visited
 // User history, etc.
 //
-//	Schemes: http
-//	Host: localhost:8001
+//	Schemes: https
+//	Host: https://goly.onrender.com
 //	BasePath: /
 //	Version: 1.0.1
 //	License: MIT http://opensource.org/licenses/MIT
@@ -44,7 +44,7 @@ type Goly struct {
 	// a unique identifier that is used in place of the original url
 	// required: false
 	// min length: 10
-	// example: http://localhost:8001/r/IPs2yW2p
+	// example: https://goly.onrender.com/r/IPs2yW2p
 	Goly string `json:"goly" gorm:"unique;not null"`
 
 	// This is used to determine if the user wants a customized link or a randomly generated shortened link
@@ -120,7 +120,7 @@ type GolyResponse struct {
 	Redirect string `json:"redirect"`
 
 	// Shortened URL
-	// example: http://localhost:8001/r/IPs2yW2p
+	// example: https://goly.onrender.com/r/IPs2yW2p
 	Goly string `json:"goly" gorm:"unique;not null"`
 
 	// Custom
@@ -148,7 +148,7 @@ type GolyResponse struct {
 	UpdatedAt time.Time `json:"updated_at"`
 
 	// QR code
-	// example: http://localhost:8001/r/IPs2yW2p/generateQRCode
+	// example: https://goly.onrender.com/r/IPs2yW2p/generateQRCode
 	QRCode string
 }
 
@@ -164,11 +164,11 @@ type PublicGolyResponse struct {
 	Redirect string `json:"redirect"`
 
 	// Shortened URL
-	// example: http://localhost:8001/r/IPs2yW2p
+	// example: https://goly.onrender.com/r/IPs2yW2p
 	Goly string `json:"goly" gorm:"unique;not null"`
 
 	// QR code
-	// example: http://localhost:8001/r/IPs2yW2p/generateQRCode
+	// example: https://goly.onrender.com/r/IPs2yW2p/generateQRCode
 	QRCode string
 }
 
@@ -188,7 +188,7 @@ type GoliesResponse struct {
 	// 			"UpdatedAt": "2023-06-26T15:22:04Z",
 	// 			"DeletedAt": null,
 	// 			"redirect": "http://go.dev",
-	// 			"goly": "http://localhost:8001/r/OerZMapl",
+	// 			"goly": "https://goly.onrender.com/r/OerZMapl",
 	// 			"clicked": 1,
 	// 			"custom": false,
 	// 			"public": true,
@@ -200,7 +200,7 @@ type GoliesResponse struct {
 	// 			"UpdatedAt": "2023-06-26T15:31:59Z",
 	// 			"DeletedAt": null,
 	// 			"redirect": "http://go.dev",
-	// 			"goly": "http://localhost:8001/r/ztgPsGvU",
+	// 			"goly": "https://goly.onrender.com/r/ztgPsGvU",
 	// 			"clicked": 0,
 	// 			"custom": false,
 	// 			"public": true,
@@ -225,11 +225,11 @@ type PublicGoliesReponse struct {
 	// 	"Golies": [
 	// 		{
 	// 			"redirect": "http://go.dev",
-	// 			"goly": "http://localhost:8001/r/OerZMapl",
+	// 			"goly": "https://goly.onrender.com/r/OerZMapl",
 	// 		},
 	// 		{
 	// 			"redirect": "http://go.dev",
-	// 			"goly": "http://localhost:8001/r/ztgPsGvU",
+	// 			"goly": "https://goly.onrender.com/r/ztgPsGvU",
 	// 		}
 	// 	],
 	// 	"number of redirects": 2,

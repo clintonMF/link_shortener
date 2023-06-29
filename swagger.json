@@ -6,7 +6,7 @@
     "application/json"
   ],
   "schemes": [
-    "http"
+    "https"
   ],
   "swagger": "2.0",
   "info": {
@@ -23,7 +23,7 @@
     },
     "version": "1.0.1"
   },
-  "host": "localhost:8001",
+  "host": "https://goly.onrender.com",
   "basePath": "/",
   "paths": {
     "/golies": {
@@ -405,7 +405,7 @@
           "type": "string",
           "minLength": 10,
           "x-go-name": "Goly",
-          "example": "http://localhost:8001/r/IPs2yW2p"
+          "example": "https://goly.onrender.comr/IPs2yW2p"
         },
         "public": {
           "description": "This indicates if the shortened link is private or public i.e only the user can access it.",
@@ -431,7 +431,7 @@
         "QRCode": {
           "description": "QR code",
           "type": "string",
-          "example": "http://localhost:8001/r/IPs2yW2p/generateQRCode"
+          "example": "https://goly.onrender.com/r/IPs2yW2p/generateQRCode"
         },
         "clicked": {
           "description": "Clicked",
@@ -457,7 +457,7 @@
           "description": "Shortened URL",
           "type": "string",
           "x-go-name": "Goly",
-          "example": "http://localhost:8001/r/IPs2yW2p"
+          "example": "https://goly.onrender.com/r/IPs2yW2p"
         },
         "id": {
           "description": "Goly ID",
@@ -518,13 +518,13 @@
         "QRCode": {
           "description": "QR code",
           "type": "string",
-          "example": "http://localhost:8001/r/IPs2yW2p/generateQRCode"
+          "example": "https://goly.onrender.com/r/IPs2yW2p/generateQRCode"
         },
         "goly": {
           "description": "Shortened URL",
           "type": "string",
           "x-go-name": "Goly",
-          "example": "http://localhost:8001/r/IPs2yW2p"
+          "example": "https://goly.onrender.com/r/IPs2yW2p"
         },
         "redirect": {
           "description": "Redirect link",
