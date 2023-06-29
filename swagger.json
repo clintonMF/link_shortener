@@ -1,0 +1,646 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "# This API helps users to shorten their url links\n\nIt has various features which include;\nGeneration of shortened link\nCustomization of shortened link\nGeneration of QR CODE\nlink analytics  i.e number of times the link has been visited\nUser history, etc.",
+    "title": "GOLY SHORTENER API.",
+    "contact": {
+      "name": "Clinton Mekwunye",
+      "url": "https://github.com/clintonMF",
+      "email": "Mekwunyeclinton22@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    },
+    "version": "1.0.1"
+  },
+  "host": "localhost:8001",
+  "basePath": "/",
+  "paths": {
+    "/golies": {
+      "get": {
+        "description": "Returns all public golies",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Golies"
+        ],
+        "operationId": "getPublicGolies",
+        "responses": {
+          "200": {
+            "description": "get public golies",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/PublicGoliesReponse"
+            }
+          },
+          "400": {
+            "description": "bad request"
+          }
+        }
+      },
+      "post": {
+        "description": "create a new goly",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Golies"
+        ],
+        "operationId": "creategoly",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "user details",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Goly"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Goly created",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/GolyResponse"
+            }
+          },
+          "400": {
+            "description": "bad request"
+          }
+        }
+      }
+    },
+    "/golies/{id}": {
+      "get": {
+        "description": "Get goly by id",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Golies"
+        ],
+        "operationId": "getGoly",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "goly id",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get goly by ID",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/GolyResponse"
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "goly not found"
+          }
+        }
+      },
+      "put": {
+        "description": "update a goly",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Golies"
+        ],
+        "operationId": "updateGoly",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "goly id",
+            "name": "id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "object",
+            "description": "course details",
+            "name": "course",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Goly"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "course updated successfully",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/GolyResponse"
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Goly not found"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete a goly",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Golies"
+        ],
+        "operationId": "deleteGoly",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Goly id",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Goly deleted successfully"
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Goly not found"
+          }
+        }
+      }
+    },
+    "/r/{redirect}": {
+      "get": {
+        "description": "performing the redirect operation",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "redirect"
+        ],
+        "operationId": "getRedirect",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "shortened link string",
+            "name": "redirect",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "301": {
+            "description": "redirect to the original website/link"
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "goly not found"
+          }
+        }
+      }
+    },
+    "/r/{redirect}/generateQRcode": {
+      "get": {
+        "description": "Generating the QR code",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "redirect"
+        ],
+        "operationId": "getQrcode",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "shortened link string",
+            "name": "redirect",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "QR code generated"
+          }
+        }
+      }
+    },
+    "/user/signin": {
+      "post": {
+        "description": "user login",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "operationId": "LoginUser",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "login details",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "user logged in, no content"
+          },
+          "400": {
+            "description": "bad request"
+          }
+        }
+      }
+    },
+    "/user/signup": {
+      "post": {
+        "description": "create a new user",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "course details",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "course created",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/UserResponse"
+            }
+          },
+          "400": {
+            "description": "bad request"
+          }
+        }
+      }
+    },
+    "/users/{id}/history": {
+      "get": {
+        "description": "Returns user goly history i.e All golies a user created",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Golies"
+        ],
+        "operationId": "getGolies",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "user id",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get golies",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/GoliesResponse"
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GoliesResponse": {
+      "description": "# Response generated when a user accesses his golies history",
+      "type": "object",
+      "title": "GoliesResponse",
+      "properties": {
+        "Golies": {
+          "description": "List of golies",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GolyResponse"
+          }
+        }
+      },
+      "x-go-package": "Go_shortener"
+    },
+    "Goly": {
+      "description": "Each goly contains all the details of the link.",
+      "type": "object",
+      "title": "Goly Model",
+      "required": [
+        "redirect",
+        "custom"
+      ],
+      "properties": {
+        "custom": {
+          "description": "This is used to determine if the user wants a customized link or a randomly generated shortened link",
+          "type": "boolean",
+          "x-go-name": "Custom",
+          "example": true
+        },
+        "goly": {
+          "description": "a unique identifier that is used in place of the original url",
+          "type": "string",
+          "minLength": 10,
+          "x-go-name": "Goly",
+          "example": "http://localhost:8001/r/IPs2yW2p"
+        },
+        "public": {
+          "description": "This indicates if the shortened link is private or public i.e only the user can access it.",
+          "type": "boolean",
+          "x-go-name": "Public",
+          "example": false
+        },
+        "redirect": {
+          "description": "the link to be shortened",
+          "type": "string",
+          "minLength": 3,
+          "x-go-name": "Redirect",
+          "example": "http://go.dev"
+        }
+      },
+      "x-go-package": "Go_shortener"
+    },
+    "GolyResponse": {
+      "description": "# Response gotten from getting a GOly by ID",
+      "type": "object",
+      "title": "GolyResponse",
+      "properties": {
+        "QRCode": {
+          "description": "QR code",
+          "type": "string",
+          "example": "http://localhost:8001/r/IPs2yW2p/generateQRCode"
+        },
+        "clicked": {
+          "description": "Clicked",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "Clicked",
+          "example": 4
+        },
+        "created_at": {
+          "description": "Course creation time",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt",
+          "example": "2022-06-01T12:30:00Z"
+        },
+        "custom": {
+          "description": "Custom",
+          "type": "boolean",
+          "x-go-name": "Custom",
+          "example": true
+        },
+        "goly": {
+          "description": "Shortened URL",
+          "type": "string",
+          "x-go-name": "Goly",
+          "example": "http://localhost:8001/r/IPs2yW2p"
+        },
+        "id": {
+          "description": "Goly ID",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "ID",
+          "example": 1
+        },
+        "public": {
+          "description": "Public",
+          "type": "boolean",
+          "x-go-name": "Public",
+          "example": false
+        },
+        "redirect": {
+          "description": "Redirect link",
+          "type": "string",
+          "x-go-name": "Redirect",
+          "example": "http://go.dev"
+        },
+        "updated_at": {
+          "description": "Course last update time",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt",
+          "example": "2022-07-12T08:45:00Z"
+        },
+        "userId": {
+          "description": "Creators ID",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "UserID",
+          "example": 1
+        }
+      },
+      "x-go-package": "Go_shortener"
+    },
+    "PublicGoliesReponse": {
+      "description": "# Response generated when an unknown user opens the home page",
+      "type": "object",
+      "title": "PublicGoliesResponse",
+      "properties": {
+        "PublicGolies": {
+          "description": "List of PublicGolies",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PublicGolyResponse"
+          }
+        }
+      },
+      "x-go-package": "Go_shortener"
+    },
+    "PublicGolyResponse": {
+      "description": "response gotten when a public goly is accessed by\nanyone who is not the author",
+      "type": "object",
+      "title": "PublicGolyResponse",
+      "properties": {
+        "QRCode": {
+          "description": "QR code",
+          "type": "string",
+          "example": "http://localhost:8001/r/IPs2yW2p/generateQRCode"
+        },
+        "goly": {
+          "description": "Shortened URL",
+          "type": "string",
+          "x-go-name": "Goly",
+          "example": "http://localhost:8001/r/IPs2yW2p"
+        },
+        "redirect": {
+          "description": "Redirect link",
+          "type": "string",
+          "x-go-name": "Redirect",
+          "example": "http://go.dev"
+        }
+      },
+      "x-go-package": "Go_shortener"
+    },
+    "User": {
+      "description": "The author of links/Golies",
+      "type": "object",
+      "title": "User",
+      "required": [
+        "name",
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "description": "the email of the user",
+          "type": "string",
+          "minLength": 5,
+          "x-go-name": "Email",
+          "example": "TheCursedChild@JJK.com"
+        },
+        "name": {
+          "description": "the name of the user",
+          "type": "string",
+          "minLength": 3,
+          "x-go-name": "Name",
+          "example": "Yuta"
+        },
+        "password": {
+          "description": "the email of the student",
+          "type": "string",
+          "minLength": 8,
+          "x-go-name": "Password",
+          "example": "son44THz"
+        }
+      },
+      "x-go-package": "Go_shortener"
+    },
+    "UserLogin": {
+      "description": "The author of links/Golies",
+      "type": "object",
+      "title": "UserLogin",
+      "required": [
+        "name",
+        "email"
+      ],
+      "properties": {
+        "email": {
+          "description": "the email of the user",
+          "type": "string",
+          "minLength": 5,
+          "x-go-name": "Email",
+          "example": "TheCursedChild@JJK.com"
+        },
+        "name": {
+          "description": "the name of the user",
+          "type": "string",
+          "minLength": 3,
+          "x-go-name": "Name",
+          "example": "Yuta"
+        }
+      },
+      "x-go-package": "Go_shortener"
+    },
+    "UserResponse": {
+      "description": "# This response is generated when a user signs up",
+      "type": "object",
+      "title": "User response",
+      "properties": {
+        "Son44Goku": {
+          "description": "password",
+          "type": "string",
+          "x-go-name": "Password",
+          "example": "Goku"
+        },
+        "created_at": {
+          "description": "user creation time",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt",
+          "example": "2022-06-01T12:30:00Z"
+        },
+        "email": {
+          "description": "email",
+          "type": "string",
+          "x-go-name": "Email",
+          "example": "supersayan@DBZ.com"
+        },
+        "id": {
+          "description": "user ID",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "ID",
+          "example": 1
+        },
+        "name": {
+          "description": "name",
+          "type": "string",
+          "x-go-name": "FirstName",
+          "example": "Goku"
+        },
+        "updated_at": {
+          "description": "user last update time",
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt",
+          "example": "2022-07-12T08:45:00Z"
+        }
+      },
+      "x-go-package": "Go_shortener"
+    }
+  }
+}
