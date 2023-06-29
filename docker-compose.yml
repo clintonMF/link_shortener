@@ -11,25 +11,25 @@ services:
     networks:
       - alt_sch
 
-  mysql:
-    image: mysql:latest
-    #    command:
-    #      - '--character-set-server=utf8mb4'
-    restart: unless-stopped
-    tty: true
-    container_name: altsch-go
-    ports:
-      - "3307:3306"
-    volumes:
-      - .:/var/lib
-      - .:/mysql
-      - .:/mysql-files
-    environment:
-      MYSQL_DATABASE: altsch-go
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: secret
-    networks:
-      - alt_sch
+  # mysql:
+  #   image: mysql:latest
+  #   #    command:
+  #   #      - '--character-set-server=utf8mb4'
+  #   restart: unless-stopped
+  #   tty: true
+  #   container_name: altsch-go
+  #   ports:
+  #     - "3307:3306"
+  #   volumes:
+  #     - .:/var/lib
+  #     - .:/mysql
+  #     - .:/mysql-files
+  #   environment:
+  #     MYSQL_DATABASE: altsch-go
+  #     MYSQL_PASSWORD: secret
+  #     MYSQL_ROOT_PASSWORD: secret
+  #   networks:
+  #     - alt_sch
 
 networks:
   alt_sch:
