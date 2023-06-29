@@ -16,11 +16,18 @@ func GetDB() *gorm.DB {
 	if err != nil {
 		fmt.Println("unable to load .env")
 	}
+	DB_TYPE := os.Getenv("DB_TYPE")
 	DB_NAME := os.Getenv("DB_NAME")
-	DB_INFO := os.Getenv("DB_INFO")
-	fmt.Println(DB_INFO, DB_NAME)
+	DB_PASS := os.Getenv("DB_PASS")
+	DB_HOST := os.Getenv("DB_HOST")
+	DB_USER := os.Getenv("DB_USER")
+
 	// db, err := gorm.Open("mysql", "root:secret@tcp(mysql:3306)/altsch-go?charset=utf8&parseTime=True&loc=Local")
-	db, err := gorm.Open(DB_NAME, DB_INFO)
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		DB_USER, DB_PASS, DB_HOST, DB_NAME)
+
+	db, err := gorm.Open(DB_TYPE, dsn)
 	if err != nil {
 		panic(err)
 	}
