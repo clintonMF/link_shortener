@@ -35,25 +35,3 @@ func GetUserByEmail(email string) (*User, error) {
 	}
 	return user, nil
 }
-
-// func UpdateGoly(goly *Goly) error {
-// 	if err := db.Save(&goly); err != nil {
-// 		return err.Error
-// 	}
-
-// 	return nil
-// }
-
-// func DeleteGoly(golyID uint64) error {
-// 	var goly Goly
-// 	err := db.Find(&goly, golyID).Error
-
-// 	if err != nil {
-// 		return utils.ErrNotFound("course", int(golyID))
-// 	}
-
-// 	if err := db.Where("id = ?", golyID).Delete(&Goly{}).Error; err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
