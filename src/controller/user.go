@@ -125,3 +125,10 @@ func SignIn(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{})
 }
+
+func SignOut(c *gin.Context) {
+	c.SetCookie("UserAuth", "", -1, "", "", false, true)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Logged out!!!",
+	})
+}

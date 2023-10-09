@@ -18,7 +18,7 @@ var (
 	cache          = setup.InitCache()
 )
 
-const name string = "https://goly.onrender.com/r/"
+const name string = "http://localhost:8080/"
 
 func GetPublicGolies(c *gin.Context) {
 	pubgolies, err := models.GetPublicGolies()
@@ -143,32 +143,6 @@ func GetGoly(c *gin.Context) {
 }
 
 func NewGoly(c *gin.Context) {
-	// swagger:operation POST /golies creategoly
-	//
-	// create a new goly
-	//
-	// ---
-	// tags:
-	//    [Golies]
-	// produces:
-	// - application/json
-	// parameters:
-	// - name: user
-	//   in: body
-	//   description: user details
-	//   required: true
-	//   type: object
-	//   schema:
-	//     "$ref": "#/definitions/Goly"
-	// responses:
-	//   '201':
-	//     description: Goly created
-	//     schema:
-	//       type: object
-	//       "$ref": "#/definitions/GolyResponse"
-	//   '400':
-	//     description: bad request
-
 	/*
 		This is used to create a new goly
 	*/

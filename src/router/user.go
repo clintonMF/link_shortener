@@ -8,11 +8,8 @@ import (
 )
 
 func RegisterRoutesUser(r *gin.RouterGroup) {
-	// r.GET("/r/:redirect", controller.Redirect)
 	r.POST("/signin", controller.SignIn)
 	r.POST("/signup", controller.SignUp)
+	r.GET("/signout", controller.SignOut)
 	r.GET("/:id/history", middleware.RequireAuth, controller.GetUserGolies)
-	// r.PUT("/:id", controller.UpdateGoly)
-	// r.DELETE("/:id", controller.DeleteGoly)
-	// r.GET("/:id/students", controller.ListStudentsTakingCourse)
 }
