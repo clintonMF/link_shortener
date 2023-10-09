@@ -8,11 +8,7 @@ import (
 )
 
 func RegisterRoutesGoly(r *gin.RouterGroup) {
-	// r.POST("/", controller.NewGoly)
-	// r.GET("/:id", controller.GetGoly)
-	// r.PUT("/:id", controller.UpdateGoly)
-	// r.DELETE("/:id", controller.DeleteGoly)
-	r.GET("/", controller.GetPublicGolies)
+	r.GET("/history", middleware.RequireAuth, controller.GetUserGolies)
 	r.POST("/", middleware.OptionalAuth, controller.NewGoly)
 	r.GET("/:id", middleware.OptionalAuth, controller.GetGoly)
 	r.PUT("/:id", middleware.RequireAuth, controller.UpdateGoly)
