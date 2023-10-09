@@ -20,22 +20,6 @@ var (
 
 const name string = "http://localhost:8080/"
 
-func GetPublicGolies(c *gin.Context) {
-	pubgolies, err := models.GetPublicGolies()
-	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"status":              "success",
-		"Golies":              pubgolies,
-		"number of redirects": len(pubgolies),
-	})
-
-	return
-}
-
 func GetUserGolies(c *gin.Context) {
 	/*
 		This function returns all the golies a user has created

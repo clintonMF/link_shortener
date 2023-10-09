@@ -66,23 +66,6 @@ func GetGoliesByUserID(userID uint) ([]Goly, error) {
 	return golies, nil
 }
 
-func GetPublicGolies() ([]PublicGoly, error) {
-	var publicGolies []PublicGoly
-	var golies []Goly
-	if err := db.Where("public = ?", true).Find(&golies).Error; err != nil {
-		return nil, err
-	}
-	for _, goly := range golies {
-		pubGo := PublicGoly{
-			Redirect: goly.Redirect,
-			Goly:     goly.Goly,
-		}
-
-		publicGolies = append(publicGolies, pubGo)
-	}
-	return publicGolies, nil
-}
-
 func UpdateGoly(goly *Goly) error {
 	if err := db.Save(&goly); err != nil {
 		return err.Error
