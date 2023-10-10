@@ -13,18 +13,20 @@ import (
 
 func RequireAuth(c *gin.Context) {
 	/*
-		this function authenticates the user and returns
-		unauthorized if the user is unknown.
-		This ensures that unknown users do not get access
-		to resources that are private
+	   This function authenticates the user and returns
+	   unauthorized if the user is unknown or unauthenticated.
+	   This ensures that unknown or unauthenticated users do not get access
+	   to private resources.
 	*/
 	tokenString, err := c.Cookie("UserAuth")
 	if err != nil {
+		// User is unauthenticated, return Unauthorized
 		c.AbortWithStatus(http.StatusUnauthorized)
+		return
 	}
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// Don't forget to validate the alg is what you expect:
+		// Don't forget to validate the algorithm is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
@@ -38,22 +40,25 @@ func RequireAuth(c *gin.Context) {
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			// Token is valid but has expired, user is unauthenticated
 			c.AbortWithStatus(http.StatusUnauthorized)
+			return
 		}
 		userID := claims["sub"].(float64)
 		user, err := models.GetUserByID(uint(userID))
 		if user == nil || err != nil {
+			// User is unauthorized or unauthenticated
 			c.AbortWithStatus(http.StatusUnauthorized)
+			return
 		}
 
 		c.Set("user", user)
 
 		c.Next()
 	} else {
+		// User is unauthenticated or unauthorized
 		c.AbortWithStatus(http.StatusUnauthorized)
-
 	}
-
 }
 
 func OptionalAuth(c *gin.Context) {
@@ -89,6 +94,7 @@ func OptionalAuth(c *gin.Context) {
 		user, err := models.GetUserByID(uint(userID))
 		if user == nil || err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
+			return
 		}
 
 		c.Set("user", user)
@@ -96,7 +102,7 @@ func OptionalAuth(c *gin.Context) {
 		c.Next()
 	} else {
 		c.AbortWithStatus(http.StatusUnauthorized)
-
+		return
 	}
 
 }
