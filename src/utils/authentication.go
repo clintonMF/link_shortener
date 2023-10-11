@@ -1,76 +1,32 @@
 package utils
 
 import (
-	"regexp"
-	"unicode"
+	"fmt"
+	"net/http"
+	"os"
+	"time"
 
-	"golang.org/x/crypto/bcrypt"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 )
 
-func HashPassword(password string) (string, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
+func ValidateToken(tokenString string) (*jwt.Token, error) {
+	return jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
 
-	return string(hashedPassword), nil
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		my_secret_key := os.Getenv("my_secret_key")
+
+		return []byte(my_secret_key), nil
+	})
 }
 
-func ComparePasswords(password string, hashedPassword string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-	return err == nil
-}
-
-func PasswordStrength(password string) bool {
-	strength := 0
-
-	if len(password) >= 7 {
-		strength += 2
+func CheckIfExpired(c *gin.Context, claims jwt.MapClaims) {
+	if float64(time.Now().Unix()) > claims["exp"].(float64) {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
 	}
-
-	hasUppercase := false
-	hasLowercase := false
-	for _, char := range password {
-		if unicode.IsUpper(char) {
-			hasUppercase = true
-		}
-		if unicode.IsLower(char) {
-			hasLowercase = true
-		}
-	}
-	if hasUppercase && hasLowercase {
-		strength += 2
-	}
-
-	hasDigit := false
-	for _, char := range password {
-		if unicode.IsDigit(char) {
-			hasDigit = true
-			break
-		}
-	}
-	if hasDigit {
-		strength++
-	}
-
-	hasSpecial := false
-	for _, char := range password {
-		if unicode.IsPunct(char) || unicode.IsSymbol(char) {
-			hasSpecial = true
-			break
-		}
-	}
-	if hasSpecial {
-		strength++
-	}
-
-	return strength >= 5
-}
-
-func IsValidEmail(email string) bool {
-	emailRegex := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
-
-	regex := regexp.MustCompile(emailRegex)
-
-	return regex.MatchString(email)
 }

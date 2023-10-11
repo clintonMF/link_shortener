@@ -66,7 +66,7 @@ func SignUp(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"status":  "success",
-		"message": utils.CreatedMessage("goly"),
+		"message": utils.CreatedMessage("user"),
 		"User":    createdUser,
 	})
 }
@@ -121,7 +121,7 @@ func SignIn(c *gin.Context) {
 	}
 
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("UserAuth", tokenString, 3600*24, "", "", false, true)
+	c.SetCookie("UserAuth", tokenString, 60*60*24*7, "", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{})
 }
