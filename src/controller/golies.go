@@ -6,8 +6,8 @@ import (
 	"Go_shortener/src/utils"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -18,7 +18,7 @@ var (
 	cache          = setup.InitCache()
 )
 
-const name string = "http://localhost:8080/"
+var name string = os.Getenv("URL_REDIRECT_NAME")
 
 func GetUserGolies(c *gin.Context) {
 	/*
@@ -68,28 +68,13 @@ func GetGoly(c *gin.Context) {
 		}
 	}
 
-	cache.Set(name, goly, 1*time.Hour)
-	// value, found = cache.Get("Goly_with_id")
-	// fmt.Println(found, "here")
+	cache.Set(name, goly, 0)
+
 	user, _ := c.Get("user")
 
-	if user == nil && !goly.Public {
-		// unknwon user can not access private golies  i.e public = false
+	if user == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "you don't have access to this resource",
-		})
-
-		return
-	} else if user == nil && goly.Public {
-		// unknwon user can access publicly available golies
-		// The goly information will not be complete
-		c.JSON(http.StatusOK, gin.H{
-			"status": "success",
-			"Goly": map[string]string{
-				"goly":         goly.Goly,
-				"redirect":     goly.Redirect,
-				"QR Code link": goly.Goly + "/generateQRCode",
-			},
 		})
 
 		return
@@ -97,23 +82,9 @@ func GetGoly(c *gin.Context) {
 
 	cur_user := user.(*models.User)
 
-	if cur_user.ID != goly.UserID && !goly.Public {
-		// Known user with different ID cannot access private golies i.e public = false
+	if cur_user.ID != goly.UserID {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "you don't have access to this resource",
-		})
-
-		return
-	} else if cur_user.ID != goly.UserID && goly.Public {
-		// known user with different userID can access publicly available golies
-		// The goly information will not be complete
-		c.JSON(http.StatusOK, gin.H{
-			"status": "success",
-			"Goly": map[string]string{
-				"goly":         goly.Goly,
-				"redirect":     goly.Redirect,
-				"QR Code link": goly.Goly + "/generateQRCode",
-			},
 		})
 
 		return
@@ -185,6 +156,7 @@ func NewGoly(c *gin.Context) {
 
 		return
 	}
+	cache.Set(goly.Goly, goly.Redirect, 0)
 
 	c.JSON(http.StatusCreated, gin.H{
 		"status":       "success",
@@ -202,13 +174,6 @@ func UpdateGoly(c *gin.Context) {
 
 	ID, _ := strconv.ParseUint(id, 10, 64)
 
-	/* name variable ensures that golies are saved with
-	the correct ID  in the cache for easy retrieve*/
-	name := "Goly with id" + string(ID)
-
-	_, found := cache.Get(name)
-	fmt.Println(found)
-
 	goly, err := models.GetGolyByID(uint(ID))
 
 	if err != nil {
@@ -218,6 +183,12 @@ func UpdateGoly(c *gin.Context) {
 		})
 
 		return
+	}
+
+	_, found := cache.Get(goly.Goly)
+
+	if found {
+		cache.Delete(goly.Goly)
 	}
 
 	var updatedGoly models.Goly
@@ -231,9 +202,10 @@ func UpdateGoly(c *gin.Context) {
 		return
 	}
 
-	// updating the goly
 	goly.Redirect = updatedGoly.Redirect
-	goly.Public = updatedGoly.Public
+	if updatedGoly.Goly != "" {
+		goly.Goly = updatedGoly.Goly
+	}
 
 	err = models.UpdateGoly(goly)
 
@@ -246,10 +218,9 @@ func UpdateGoly(c *gin.Context) {
 	}
 
 	// update the cache data
-	if found {
-		cache.Set(name, goly, 1*time.Hour)
-	}
+	cache.Set(goly.Goly, goly.Redirect, 0)
 
+	fmt.Println(goly.Goly, found)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "success",
 		"message": utils.UpdatedMessage("goly", int(ID)),
@@ -257,6 +228,7 @@ func UpdateGoly(c *gin.Context) {
 	})
 }
 
+// cache.Delete(goly.Goly)
 func DeleteGoly(c *gin.Context) {
 	id := c.Param("id")
 
