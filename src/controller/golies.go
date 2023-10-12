@@ -228,14 +228,12 @@ func UpdateGoly(c *gin.Context) {
 	})
 }
 
-// cache.Delete(goly.Goly)
 func DeleteGoly(c *gin.Context) {
 	id := c.Param("id")
 
 	ID, _ := strconv.ParseUint(id, 10, 64)
 
-	err := models.DeleteGoly(uint(ID))
-
+	goly, err := models.GetGolyByID(uint(ID))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status": "error",
@@ -244,6 +242,8 @@ func DeleteGoly(c *gin.Context) {
 
 		return
 	}
+	cache.Delete(goly.Goly)
+	_ = models.DeleteGoly(uint(ID))
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "success",
