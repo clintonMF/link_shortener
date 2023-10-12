@@ -22,8 +22,6 @@ func GetDB() *gorm.DB {
 	DB_HOST := os.Getenv("DB_HOST")
 	DB_USER := os.Getenv("DB_USER")
 
-	// db, err := gorm.Open("mysql", "root:secret@tcp(mysql:3306)/altsch-go?charset=utf8&parseTime=True&loc=Local")
-
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		DB_USER, DB_PASS, DB_HOST, DB_NAME)
 
@@ -35,10 +33,7 @@ func GetDB() *gorm.DB {
 }
 
 func InitCache() *cache.Cache {
-	// Initialize your cache instance
-	cache := cache.New(5*time.Minute, 10*time.Minute)
-
-	// Perform any cache initialization tasks here
+	cache := cache.New(10*time.Hour, 24*time.Hour)
 
 	return cache
 }
