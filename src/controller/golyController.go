@@ -2,6 +2,7 @@ package controller
 
 import (
 	"Go_shortener/src/models"
+	"Go_shortener/src/services"
 	"Go_shortener/src/setup"
 	"Go_shortener/src/utils"
 	"fmt"
@@ -28,7 +29,7 @@ func GetUserGolies(c *gin.Context) {
 	user, _ := c.Get("user")
 
 	cur_user := user.(*models.User)
-	golies, err := models.GetGoliesByUserID(cur_user.ID)
+	golies, err := services.GetGoliesByUserID(cur_user.ID)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -56,7 +57,7 @@ func GetGoly(c *gin.Context) {
 	if found {
 		goly = value.(*models.Goly)
 	} else {
-		goly, err = models.GetGolyByID(uint(ID))
+		goly, err = services.GetGolyByID(uint(ID))
 
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{
@@ -174,7 +175,7 @@ func UpdateGoly(c *gin.Context) {
 
 	ID, _ := strconv.ParseUint(id, 10, 64)
 
-	goly, err := models.GetGolyByID(uint(ID))
+	goly, err := services.GetGolyByID(uint(ID))
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -207,7 +208,7 @@ func UpdateGoly(c *gin.Context) {
 		goly.Goly = updatedGoly.Goly
 	}
 
-	err = models.UpdateGoly(goly)
+	err = services.UpdateGoly(goly)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -233,7 +234,7 @@ func DeleteGoly(c *gin.Context) {
 
 	ID, _ := strconv.ParseUint(id, 10, 64)
 
-	goly, err := models.GetGolyByID(uint(ID))
+	goly, err := services.GetGolyByID(uint(ID))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status": "error",
@@ -243,7 +244,7 @@ func DeleteGoly(c *gin.Context) {
 		return
 	}
 	cache.Delete(goly.Goly)
-	_ = models.DeleteGoly(uint(ID))
+	_ = services.DeleteGoly(uint(ID))
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "success",

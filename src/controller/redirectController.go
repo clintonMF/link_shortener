@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"Go_shortener/src/models"
+	"Go_shortener/src/services"
 	"Go_shortener/src/utils"
 	"fmt"
 	"net/http"
@@ -11,13 +11,13 @@ import (
 
 func updateClicks(url string) {
 	// this function updates the click in the background
-	goly, err := models.GetGolyByURL(url)
+	goly, err := services.GetGolyByURL(url)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	goly.Clicked += 1
 
-	err = models.UpdateGoly(goly)
+	err = services.UpdateGoly(goly)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -40,7 +40,7 @@ func Redirect(c *gin.Context) {
 		return
 	}
 
-	goly, err := models.GetGolyByURL(name + golyUrl)
+	goly, err := services.GetGolyByURL(name + golyUrl)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -49,7 +49,7 @@ func Redirect(c *gin.Context) {
 	goly.Clicked += 1
 	cache.Set(name+golyUrl, goly.Redirect, 0)
 
-	err = models.UpdateGoly(goly)
+	err = services.UpdateGoly(goly)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -64,7 +64,7 @@ func Redirect(c *gin.Context) {
 
 func GenerateQRCode(c *gin.Context) {
 	golyUrl := c.Param("redirect")
-	goly, err := models.GetGolyByURL(name + golyUrl)
+	goly, err := services.GetGolyByURL(name + golyUrl)
 
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
