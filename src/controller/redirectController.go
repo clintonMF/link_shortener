@@ -24,7 +24,6 @@ func updateClicks(url string) {
 		return
 	}
 	cache.Set(url, goly.Redirect, 0)
-	fmt.Println("clicks updated")
 }
 
 func Redirect(c *gin.Context) {

@@ -5,7 +5,6 @@ import (
 	"Go_shortener/src/services"
 	"Go_shortener/src/setup"
 	"Go_shortener/src/utils"
-	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -49,27 +48,16 @@ func GetGoly(c *gin.Context) {
 
 	ID, _ := strconv.ParseUint(id, 10, 64)
 
-	/* name variable ensures that golies are saved with
-	the correct ID  in the cache for easy retrieve*/
-	name := "Goly with id" + string(ID)
+	goly, err = services.GetGolyByID(uint(ID))
 
-	value, found := cache.Get(name)
-	if found {
-		goly = value.(*models.Goly)
-	} else {
-		goly, err = services.GetGolyByID(uint(ID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": "error",
+			"error":  err.Error(),
+		})
 
-		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{
-				"status": "error",
-				"error":  err.Error(),
-			})
-
-			return
-		}
+		return
 	}
-
-	cache.Set(name, goly, 0)
 
 	user, _ := c.Get("user")
 
@@ -91,6 +79,7 @@ func GetGoly(c *gin.Context) {
 		return
 	}
 
+	cache.Set(goly.Goly, goly.Redirect, 0)
 	c.JSON(http.StatusOK, gin.H{
 		"status":       "success",
 		"Goly":         goly,
@@ -221,7 +210,6 @@ func UpdateGoly(c *gin.Context) {
 	// update the cache data
 	cache.Set(goly.Goly, goly.Redirect, 0)
 
-	fmt.Println(goly.Goly, found)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "success",
 		"message": utils.UpdatedMessage("goly", int(ID)),
