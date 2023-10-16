@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"Go_shortener/src/models"
+	"Go_shortener/src/services"
 	"Go_shortener/src/utils"
 	"net/http"
 
@@ -29,7 +29,7 @@ func RequireAuth(c *gin.Context) {
 		utils.CheckIfExpired(c, claims)
 
 		userID := claims["sub"].(float64)
-		user, err := models.GetUserByID(uint(userID))
+		user, err := services.GetUserByID(uint(userID))
 		if user == nil || err != nil {
 			// User is unauthorized or unauthenticated
 			c.AbortWithStatus(http.StatusUnauthorized)
@@ -64,7 +64,7 @@ func OptionalAuth(c *gin.Context) {
 		utils.CheckIfExpired(c, claims)
 
 		userID := claims["sub"].(float64)
-		user, err := models.GetUserByID(uint(userID))
+		user, err := services.GetUserByID(uint(userID))
 		if user == nil || err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return

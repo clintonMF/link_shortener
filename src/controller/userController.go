@@ -2,6 +2,7 @@ package controller
 
 import (
 	"Go_shortener/src/models"
+	"Go_shortener/src/services"
 	"Go_shortener/src/utils"
 	"net/http"
 	"os"
@@ -86,7 +87,7 @@ func SignIn(c *gin.Context) {
 		return
 	}
 
-	user, err := models.GetUserByEmail(body.Email)
+	user, err := services.GetUserByEmail(body.Email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "error",
