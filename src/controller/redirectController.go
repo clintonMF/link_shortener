@@ -14,12 +14,14 @@ func updateClicks(url string) {
 	goly, err := services.GetGolyByURL(url)
 	if err != nil {
 		fmt.Println(err.Error())
+		return
 	}
 	goly.Clicked += 1
 
 	err = services.UpdateGoly(goly)
 	if err != nil {
 		fmt.Println(err.Error())
+		return
 	}
 	cache.Set(url, goly.Redirect, 0)
 	fmt.Println("clicks updated")
