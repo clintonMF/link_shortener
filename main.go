@@ -7,11 +7,15 @@ import (
 	"fmt"
 	"net/http"
 
-	// "github.com/gin-contrib/cors"
+	_ "Go_shortener/docs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title     Gingo Bookstore API
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -40,6 +44,13 @@ func main() {
 			"Status":  "currently running",
 			"message": "To view all public golies head to the /golies"})
 	})
+
+	r.Static("/swagger", "./swagger")
+
+	// docs.SwaggerInfo.BasePath = "/api/v1"
+	// r.Static("/swagger", "./docs/swagger.json")
+
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// other router families
 	users := r.Group("/users")

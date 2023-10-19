@@ -10,7 +10,7 @@
   ],
   "swagger": "2.0",
   "info": {
-    "description": "# This API helps users to shorten their url links\n\nIt has various features which include;\nGeneration of shortened link\nCustomization of shortened link\nGeneration of QR CODE\nlink analytics  i.e number of times the link has been visited\nUser history, etc.",
+    "description": "# This API helps users to shorten their url links\n<br>It has various features which include;<br>1.Generation of shortened link<br>2. Customization of shortened link<br>3. Generation of QR CODE<br>4. link analytics  i.e number of times the link has been visited\nUser history, etc.",
     "title": "GOLY SHORTENER API.",
     "contact": {
       "name": "Clinton Mekwunye",
@@ -23,32 +23,10 @@
     },
     "version": "1.0.1"
   },
-  "host": "https://goly.onrender.com",
+  "host": "goly.onrender.com",
   "basePath": "/",
   "paths": {
     "/golies": {
-      "get": {
-        "description": "Returns all public golies",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "Golies"
-        ],
-        "operationId": "getPublicGolies",
-        "responses": {
-          "200": {
-            "description": "get public golies",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/PublicGoliesReponse"
-            }
-          },
-          "400": {
-            "description": "bad request"
-          }
-        }
-      },
       "post": {
         "description": "create a new goly",
         "produces": [
@@ -60,7 +38,6 @@
         "operationId": "creategoly",
         "parameters": [
           {
-            "type": "object",
             "description": "user details",
             "name": "user",
             "in": "body",
@@ -84,6 +61,47 @@
         }
       }
     },
+    "/golies/history": {
+      "get": {
+        "description": "Returns user goly history i.e All golies a user created",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Golies"
+        ],
+        "operationId": "getGolies",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "user id",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "UserAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get golies",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/GoliesResponse"
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/golies/{id}": {
       "get": {
         "description": "Get goly by id",
@@ -101,6 +119,11 @@
             "name": "id",
             "in": "query",
             "required": true
+          }
+        ],
+        "security": [
+          {
+            "UserAuth": []
           }
         ],
         "responses": {
@@ -141,13 +164,18 @@
           },
           {
             "type": "object",
-            "description": "course details",
-            "name": "course",
+            "description": "goly details",
+            "name": "goly",
             "in": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/Goly"
             }
+          }
+        ],
+        "security": [
+          {
+            "UserAuth": []
           }
         ],
         "responses": {
@@ -187,6 +215,11 @@
             "required": true
           }
         ],
+        "security": [
+          {
+            "UserAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Goly deleted successfully"
@@ -222,6 +255,7 @@
             "required": true
           }
         ],
+        "security": [],
         "responses": {
           "301": {
             "description": "redirect to the original website/link"
@@ -240,58 +274,29 @@
     },
     "/r/{redirect}/generateQRcode": {
       "get": {
-        "description": "Generating the QR code",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "redirect"
-        ],
+        "description": "Generate a QR code image for a shortened link",
+        "produces": ["image/png"], 
+        "tags": ["redirect"],
         "operationId": "getQrcode",
         "parameters": [
           {
-            "type": "integer",
-            "description": "shortened link string",
             "name": "redirect",
-            "in": "query",
-            "required": true
+            "in": "path",
+            "description": "Shortened link string",
+            "required": true,
+            "type": "string"
           }
         ],
+        "security": [],
         "responses": {
           "200": {
-            "description": "QR code generated"
-          }
-        }
-      }
-    },
-    "/user/signin": {
-      "post": {
-        "description": "user login",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "user"
-        ],
-        "operationId": "LoginUser",
-        "parameters": [
-          {
-            "type": "object",
-            "description": "login details",
-            "name": "user",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/UserLogin"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "user logged in, no content"
+            "description": "QR code image generated"
           },
           "400": {
-            "description": "bad request"
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Shortened link not found"
           }
         }
       }
@@ -320,7 +325,7 @@
         ],
         "responses": {
           "201": {
-            "description": "course created",
+            "description": "user created",
             "schema": {
               "type": "object",
               "$ref": "#/definitions/UserResponse"
@@ -332,41 +337,79 @@
         }
       }
     },
-    "/users/{id}/history": {
-      "get": {
-        "description": "Returns user goly history i.e All golies a user created",
+    "/user/signin": {
+      "post": {
+        "description": "user login",
         "produces": [
           "application/json"
         ],
         "tags": [
-          "Golies"
+          "user"
         ],
-        "operationId": "getGolies",
+        "operationId": "LoginUser",
         "parameters": [
           {
-            "type": "integer",
-            "description": "user id",
-            "name": "id",
-            "in": "query",
-            "required": true
+            "type": "object",
+            "description": "login details",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
           }
         ],
         "responses": {
-          "200": {
-            "description": "get golies",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/GoliesResponse"
+          "201": {
+            "description": "user logged in, no content",
+            "headers": {
+              "set-cookie": {
+                "type": "string",
+                "description": "Set-Cookie header containing session information",
+                "format": "cookie"
+              }
             }
           },
           "400": {
             "description": "bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }
+    },
+    "/user/signout": {
+      "post": {
+        "description": "user logout",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user"
+        ],
+        "operationId": "LogoutUser",
+        "responses": {
+          "204": {
+            "description": "user logged out, no content",
+            "headers": {
+              "set-cookie": {
+                "type": "string",
+                "description": "Set-Cookie header to clear the UserAuth cookie",
+                "format": "cookie",
+                "default": "UserAuth=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "UserAuth": {
+      "type": "apiKey",
+      "name": "Cookie",
+      "in": "cookie"
     }
   },
   "definitions": {
@@ -642,5 +685,6 @@
       },
       "x-go-package": "Go_shortener"
     }
-  }
+  },
+  "x-internal": false
 }
