@@ -6,16 +6,13 @@ import (
 	"Go_shortener/src/setup"
 	"fmt"
 	"net/http"
+	"time"
 
-	_ "Go_shortener/docs"
-
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title     Gingo Bookstore API
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -24,14 +21,14 @@ func main() {
 
 	r := gin.Default()
 
-	// r.Use(cors.New(cors.Config{
-	// 	AllowOrigins:     []string{"https://*", "http://*"},
-	// 	AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "OPTIONS", "DELETE"},
-	// 	AllowHeaders:     []string{"Content-Length", "Accept", "Authorization", "Content-Type", "X-CSRF-Token", "Origins"},
-	// 	ExposeHeaders:    []string{"Content-Length"},
-	// 	AllowCredentials: true,
-	// 	MaxAge:           12 * time.Hour,
-	// }))
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"https://*", "http://*"},
+		AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "OPTIONS", "DELETE"},
+		AllowHeaders:     []string{"Content-Length", "Accept", "Authorization", "Content-Type", "X-CSRF-Token", "Origins"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	db := setup.GetDB()
 	db.AutoMigrate(&models.Goly{})
@@ -44,13 +41,6 @@ func main() {
 			"Status":  "currently running",
 			"message": "To view all public golies head to the /golies"})
 	})
-
-	r.Static("/swagger", "./swagger")
-
-	// docs.SwaggerInfo.BasePath = "/api/v1"
-	// r.Static("/swagger", "./docs/swagger.json")
-
-	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// other router families
 	users := r.Group("/users")
